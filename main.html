@@ -856,13 +856,15 @@ async function sendChat(){
   document.getElementById('cpAvatar').style.boxShadow='0 0 0 3px rgba(45,212,200,.25)';
   try{
     const msgs=chat.filter(m=>!m.err).map(m=>({role:m.role==='bot'?'assistant':'user',content:m.content}));
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:500,system:sysPrompt(),messages:msgs})});
+    if(!res.ok){const err=await res.json().catch(()=>({}));throw new Error(err.error?.message||res.statusText);}
     const data=await res.json();
     const txt=(data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('\n').trim();
-    chat.push({role:'bot',content:txt||'…'});
-    if(ttsOn)speakText(txt||'');
-  }catch(e){chat.push({role:'bot',content:T[LANG].cp.err,err:true});}
+    if(!txt)throw new Error('Empty response');
+    chat.push({role:'bot',content:txt});
+    if(ttsOn)speakText(txt);
+  }catch(e){console.error('Copilot error:',e);chat.push({role:'bot',content:T[LANG].cp.err,err:true});}
   chatBusy=false;
   setCpStatus(T[LANG].cp.idle);
   document.getElementById('cpAvatar').style.boxShadow='';
