@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="id" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SpektraDSSC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500&family=Noto+Sans+Arabic:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0D1B26;--surface:#132030;--card:#192A38;--line:#23394D;
+  --ink:#EAF6F6;--muted:#8FB0BF;--dim:#5E7E8E;
+  --cyan:#2DD4C8;--cyan2:#1A8A82;--green:#5BC678;--amber:#EFB23E;--red:#E85F5F;
+  --r:14px;--font:'Inter','Noto Sans SC','Noto Sans Arabic',sans-serif;--mono:'JetBrains Mono',monospace;
+}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15.5px;line-height:1.6;min-height:100vh}
+a{color:var(--cyan)}
+button{cursor:pointer;font-family:var(--font)}
+input,select{font-family:var(--font)}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+
+.hdr{position:sticky;top:0;z-index:100;background:rgba(13,27,38,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);height:58px;display:flex;align-items:center;padding:0 22px;gap:14px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:600;font-size:18px}
+.logo-icon{width:30px;height:15px;border-radius:4px;background:linear-gradient(90deg,#7B2FA5,#2845D0,#00AABB,#2BAF50,#D9B800,#D07000,#C82020)}
+.logo b{color:var(--cyan)}
+.lang-sw{margin-left:auto;display:flex;gap:2px;background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:3px}
+.lang-sw button{background:transparent;border:none;color:var(--muted);font-size:12.5px;font-family:var(--mono);padding:6px 12px;border-radius:7px;transition:.15s}
+.lang-sw button.on{background:var(--cyan);color:#0a2020;font-weight:600}
+
+.wrap{max-width:1120px;margin:0 auto;padding:0 18px 44px}
+.hero{padding:32px 0 22px}
+.eyebrow{font-family:var(--mono);font-size:12.5px;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);margin-bottom:12px}
+.hero h1{font-size:clamp(26px,4vw,40px);font-weight:600;line-height:1.12;letter-spacing:-.5px;margin-bottom:12px}
+.grad{background:linear-gradient(90deg,#A855F7,#2DD4C8,#5BC678,#EFB23E);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--muted);font-size:15.5px;max-width:640px;margin-bottom:16px}
+.badges{display:flex;gap:8px;flex-wrap:wrap}
+.badge{font-size:13px;padding:6px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--muted)}
+.badge.warn{border-color:#5a2828;background:#221212;color:#EF9A8E}
+
+.main-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
+@media(max-width:860px){.main-grid{grid-template-columns:1fr}}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.card-hdr{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.card-num{width:24px;height:24px;border-radius:7px;background:var(--cyan);color:#0a2020;font-family:var(--mono);font-size:12.5px;font-weight:700;display:grid;place-items:center;flex:none}
+.card-title{font-size:16px;font-weight:600}
+.card-sub{font-size:13px;color:var(--muted);margin-bottom:16px}
+
+.slot{border:1px solid var(--line);border-radius:11px;padding:13px;margin-bottom:11px;background:var(--bg)}
+.slot:focus-within{border-color:var(--cyan2)}
+.slot-top{display:flex;align-items:center;gap:8px;margin-bottom:11px}
+.dot{width:11px;height:11px;border-radius:50%;flex:none}
+.slot-label{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.5px;font-weight:500}
+.seg{margin-left:auto;display:flex;background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{background:transparent;border:none;color:var(--muted);font-family:var(--mono);font-size:12px;padding:6px 11px}
+.seg button.on{background:var(--card);color:var(--ink)}
+.rm{background:transparent;border:none;color:var(--dim);font-size:18px;line-height:1;padding:2px 4px}
+.rm:hover{color:var(--red)}
+label{display:block;font-size:12.5px;color:var(--muted);margin-bottom:5px}
+input[type=text],input[type=number],select{width:100%;background:var(--surface);border:1px solid var(--line);color:var(--ink);border-radius:9px;padding:10px 12px;font-size:14.5px;outline:none}
+input:focus,select:focus{border-color:var(--cyan2)}
+input::placeholder{color:var(--dim)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
+.field{margin-bottom:9px}
+.meta-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+.pill{font-family:var(--mono);font-size:11.5px;padding:3px 8px;border-radius:6px;border:1px solid var(--line)}
+.meta-note{font-size:12px;color:var(--muted);margin-top:6px}
+.ratio-row{display:flex;align-items:center;gap:9px;margin-top:9px}
+.ratio-row label{margin:0;width:42px}
+.ratio-row input[type=range]{flex:1;accent-color:var(--cyan);height:6px}
+.ratio-val{font-family:var(--mono);font-size:12.5px;color:var(--ink);width:46px;text-align:right}
+.addbtn{width:100%;border:1px dashed var(--line);background:transparent;color:var(--muted);padding:12px;border-radius:10px;font-size:13.5px;font-family:var(--mono);transition:.18s;margin-top:4px}
+.addbtn:hover:not(:disabled){border-color:var(--cyan);color:var(--cyan)}
+.addbtn:disabled{opacity:.3;cursor:not-allowed}
+
+.eng-wrap{border:1px solid var(--line);border-radius:11px;margin-top:14px;overflow:hidden}
+.eng-head{display:flex;align-items:center;gap:9px;padding:12px 14px;cursor:pointer;background:var(--surface)}
+.eng-head>i{color:var(--cyan);font-size:17px}
+.eng-head span{font-size:14px;font-weight:500;flex:1}
+.eng-head .chev{color:var(--dim);font-size:16px;transition:.2s}
+.eng-wrap.open .eng-head .chev{transform:rotate(180deg)}
+.eng-body{display:none;padding:14px}
+.eng-wrap.open .eng-body{display:block}
+.eng-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.eng-tab{background:transparent;border:1px solid var(--line);color:var(--muted);font-size:12px;font-family:var(--mono);padding:6px 11px;border-radius:8px}
+.eng-tab.on{background:var(--cyan);color:#0a2020;font-weight:600;border-color:var(--cyan)}
+.eng-field{margin-bottom:13px}
+.eng-fl{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;gap:8px}
+.eng-name{font-size:13.5px;font-weight:500;color:var(--ink)}
+.eng-fx{font-family:var(--mono);font-size:12.5px;color:var(--cyan);flex:none}
+.eng-stars{font-size:10px;color:var(--amber);margin-left:5px}
+.eng-range{display:flex;align-items:center;gap:9px}
+.eng-range input[type=range]{flex:1;accent-color:var(--cyan);height:6px}
+.eng-rv{font-family:var(--mono);font-size:12.5px;color:var(--ink);width:64px;text-align:right}
+.eng-hint{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.45}
+.eng-foot{display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
+.eng-m{font-family:var(--mono);font-size:13px;color:var(--muted)}
+.eng-m b{color:var(--cyan)}
+.eng-reset{background:transparent;border:1px solid var(--line);color:var(--muted);font-size:12.5px;font-family:var(--mono);padding:6px 12px;border-radius:8px}
+.eng-reset:hover{border-color:var(--cyan);color:var(--cyan)}
+
+.empty{text-align:center;color:var(--muted);padding:40px 10px;font-size:14.5px}
+.r-top{text-align:center;padding:6px 0 12px}
+.r-lbl{font-family:var(--mono);font-size:11.5px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.r-eta{font-size:clamp(52px,11vw,78px);font-weight:600;line-height:1;background:linear-gradient(90deg,var(--cyan),var(--green));-webkit-background-clip:text;background-clip:text;color:transparent}
+.r-unit{font-size:.38em;-webkit-text-fill-color:var(--muted)}
+.r-range{font-family:var(--mono);font-size:13.5px;color:var(--muted);margin-top:5px}
+.r-raw{font-family:var(--mono);font-size:11px;color:var(--dim);margin-top:4px}
+.r-conf{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:12.5px;padding:6px 13px;border-radius:999px;border:1px solid var(--line);margin-top:10px}
+.r-cdot{width:9px;height:9px;border-radius:50%}
+.insight{border-radius:10px;padding:12px 15px;font-size:14px;line-height:1.5;border:1px solid var(--line);margin:12px 0}
+.insight.ok{border-color:#235a3a;background:#10301e;color:#9BE9B5}
+.insight.warn{border-color:#5a2828;background:#221212;color:#EF9A8E}
+.ncurve{margin:10px 0 2px}
+.spectrum{margin:10px 0 2px}
+svg{width:100%;height:auto;display:block}
+.leg{display:flex;gap:12px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin-top:6px;justify-content:center}
+.leg span{display:inline-flex;align-items:center;gap:5px}
+.leg i{width:10px;height:10px;border-radius:3px}
+table.bd{width:100%;border-collapse:collapse;margin-top:12px;font-size:13.5px}
+table.bd th,table.bd td{padding:8px 9px;border-bottom:1px solid var(--line);text-align:left}
+table.bd th{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:500}
+table.bd td.num{font-family:var(--mono);text-align:right}
+.factors{margin-top:10px;font-family:var(--mono);font-size:11.5px;color:var(--muted);background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:10px 12px;overflow-x:auto;white-space:nowrap}
+.factors b{color:var(--cyan)}
+.r-actions{display:flex;gap:9px;margin-top:14px;flex-wrap:wrap}
+.btn{font-size:13.5px;border-radius:9px;padding:10px 16px;border:1px solid var(--line);background:transparent;color:var(--ink);font-family:var(--font)}
+.btn:hover{border-color:var(--cyan)}
+.btn.primary{background:var(--cyan);color:#0a2020;border-color:var(--cyan);font-weight:600}
+
+.copilot-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-bottom:18px}
+.copilot-head{display:flex;align-items:center;gap:13px;padding:16px 20px;border-bottom:1px solid var(--line);background:linear-gradient(120deg,var(--surface),#15303d)}
+.copilot-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--cyan2),#15463a);display:flex;align-items:center;justify-content:center;flex:none;position:relative;transition:.2s;box-shadow:0 0 0 1px rgba(45,212,200,.25)}
+.copilot-avatar .vico{color:#c4f7f0;width:23px;height:23px}
+.copilot-avatar .pulse{position:absolute;inset:-5px;border-radius:50%;border:2px solid var(--cyan);opacity:0}
+.copilot-avatar.listening .pulse{opacity:.6;animation:cpulse 1.1s infinite;border-color:var(--red)}
+.copilot-avatar.speaking .pulse{opacity:.6;animation:cpulse 1.1s infinite;border-color:var(--green)}
+.copilot-avatar.listening{box-shadow:0 0 0 1px var(--red),0 0 16px rgba(232,95,95,.4)}
+.copilot-avatar.speaking{box-shadow:0 0 0 1px var(--green),0 0 16px rgba(91,198,120,.4)}
+@keyframes cpulse{0%,100%{opacity:.6;transform:scale(1)}50%{opacity:0;transform:scale(1.4)}}
+.copilot-info{flex:1;min-width:0}
+.copilot-name{font-size:15.5px;font-weight:600}
+.copilot-status{font-size:13px;color:var(--muted)}
+.copilot-actions{display:flex;gap:9px}
+.vbtn{height:48px;min-width:48px;padding:0 16px;border-radius:14px;border:1.5px solid var(--line);background:var(--card);display:inline-flex;align-items:center;justify-content:center;gap:8px;color:var(--ink);font-size:13.5px;font-weight:500;transition:.16s}
+.vbtn>i.ti{font-size:22px;line-height:1}
+.vbtn .vlbl{font-size:13.5px}
+.vbtn .eq{display:none;align-items:flex-end;gap:2.5px;height:20px}
+.vbtn .eq i{display:block;width:3px;height:6px;border-radius:2px;background:currentColor;animation:eqbar .9s ease-in-out infinite}
+.vbtn .eq i:nth-child(2){animation-delay:.18s}
+.vbtn .eq i:nth-child(3){animation-delay:.36s}
+.vbtn .eq i:nth-child(4){animation-delay:.54s}
+@keyframes eqbar{0%,100%{height:5px}50%{height:18px}}
+.vbtn.rec>i.ti,.vbtn.speaking>i.ti{display:none}
+.vbtn.rec .eq,.vbtn.speaking .eq{display:inline-flex}
+@media(max-width:540px){.vbtn .vlbl{display:none}.vbtn{min-width:48px;padding:0}}
+.vbtn:hover{border-color:var(--cyan);color:var(--cyan);background:var(--surface)}
+.vbtn.mic.rec{border-color:var(--red);background:rgba(232,95,95,.16);color:var(--red)}
+.vbtn.tts.on{border-color:var(--green);color:var(--green)}
+.vbtn.tts.speaking{border-color:var(--green);background:rgba(91,198,120,.18);color:var(--green)}
+.chatlog{padding:16px 20px;min-height:140px;max-height:380px;overflow-y:auto;display:flex;flex-direction:column;gap:11px}
+.msg{max-width:84%;padding:11px 14px;border-radius:12px;font-size:14.5px;line-height:1.55;word-wrap:break-word;white-space:pre-wrap}
+.msg.user{align-self:flex-end;background:var(--surface);border:1px solid var(--cyan2)}
+.msg.bot{align-self:flex-start;background:var(--bg);border:1px solid var(--line)}
+.msg.err{border-color:#5a2828;background:#221212;color:#EF9A8E}
+.msg.typing{color:var(--dim);font-family:var(--mono);font-size:13px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;padding:0 20px 14px}
+.chip{font-size:13px;padding:8px 13px;border:1px dashed var(--line);border-radius:9px;color:var(--muted);background:transparent}
+.chip:hover{border-color:var(--cyan);color:var(--cyan)}
+.chat-input-row{display:flex;gap:10px;padding:14px 20px;border-top:1px solid var(--line);align-items:center}
+.chat-input-row input{flex:1;background:var(--surface);border:1px solid var(--line);color:var(--ink);border-radius:12px;padding:13px 16px;font-size:14.5px;outline:none}
+.chat-input-row input:focus{border-color:var(--cyan2)}
+.chat-send{width:48px;height:48px;border-radius:14px;border:none;background:var(--cyan);display:flex;align-items:center;justify-content:center;color:#0a2020;font-size:21px;flex:none;transition:.16s}
+.chat-send:hover{opacity:.88;transform:translateY(-1px)}
+
+.method{padding:6px 0 12px}
+.method h2{font-size:20px;font-weight:600;margin-bottom:14px}
+details{background:var(--card);border:1px solid var(--line);border-radius:var(--r);margin-bottom:9px;overflow:hidden}
+summary{cursor:pointer;padding:15px 18px;font-size:15px;font-weight:500;list-style:none;display:flex;align-items:center;gap:9px}
+summary i{color:var(--cyan);font-size:18px}
+summary::-webkit-details-marker{display:none}
+summary .chev{margin-left:auto;color:var(--dim);transition:.2s;font-size:15px}
+details[open] summary .chev{transform:rotate(90deg)}
+.dbody{padding:0 18px 18px;color:var(--muted);font-size:14.5px;line-height:1.7}
+.dbody code{font-family:var(--mono);font-size:12.5px;background:var(--bg);border:1px solid var(--line);padding:2px 6px;border-radius:5px;color:var(--cyan)}
+.dbody ul{padding-left:18px}
+.warnbox{background:#221212;border:1px solid #5a2828;color:#EF9A8E;border-radius:9px;padding:11px 14px;font-size:13.5px;margin:8px 0}
+
+footer{border-top:1px solid var(--line);padding:24px 0 18px;color:var(--dim);font-size:12.5px;text-align:center}
+.ft-team{display:flex;flex-wrap:wrap;gap:18px;justify-content:center;margin-bottom:16px}
+.ft-col .ft-title{font-size:13px;font-weight:600;color:var(--muted);margin-bottom:8px}
+.chips2{display:flex;gap:7px;flex-wrap:wrap;justify-content:center}
+.chip2{font-family:var(--mono);font-size:11.5px;padding:5px 10px;border:1px solid var(--line);border-radius:8px;color:var(--muted)}
+.chip2.hi{border-color:var(--cyan2);color:var(--cyan)}
+.ft-div{width:1px;background:var(--line);align-self:stretch}
+@media(max-width:640px){.ft-div{display:none}.ft-team{flex-direction:column;align-items:center}}
+</style>
+</head>
+<body>
+<h2 class="sr-only">SpektraDSSC — Prediksi efisiensi sel surya pewarna alami dengan model sinergi panchromatic, tersedia dalam 4 bahasa.</h2>
+
+<header class="hdr">
+  <div class="logo"><span class="logo-icon"></span>Spektra<b>DSSC</b></div>
+  <div class="lang-sw">
+    <button id="btnID" class="on" onclick="setLang('id')">ID</button>
+    <button id="btnEN" onclick="setLang('en')">EN</button>
+    <button id="btnZH" onclick="setLang('zh')">中文</button>
+    <button id="btnAR" onclick="setLang('ar')">عربي</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <section class="hero">
+    <div class="eyebrow" data-t="eyebrow"></div>
+    <h1 data-t="h1"></h1>
+    <p data-t="hero_p"></p>
+    <div class="badges">
+      <span class="badge warn" data-t="badge_warn"></span>
+      <span class="badge" data-t="badge_info"></span>
+    </div>
+  </section>
+
+  <div class="main-grid">
+    <div class="card">
+      <div class="card-hdr"><span class="card-num">1</span><span class="card-title" data-t="card1_title"></span></div>
+      <p class="card-sub" data-t="card1_sub"></p>
+      <div id="slots"></div>
+      <button class="addbtn" id="addBtn"></button>
+      <div class="eng-wrap" id="engWrap">
+        <div class="eng-head" onclick="toggleEng()">
+          <i class="ti ti-flask" aria-hidden="true"></i>
+          <span id="engTitle"></span>
+          <i class="ti ti-chevron-down chev" aria-hidden="true"></i>
+        </div>
+        <div class="eng-body">
+          <div class="eng-tabs" id="engTabs"></div>
+          <div id="engFields"></div>
+          <div class="eng-foot">
+            <span class="eng-m" id="engM"></span>
+            <button class="eng-reset" id="engReset"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-hdr"><span class="card-num">2</span><span class="card-title" data-t="card2_title"></span></div>
+      <p class="card-sub" data-t="card2_sub"></p>
+      <div id="result"></div>
+    </div>
+  </div>
+
+  <!-- COPILOT -->
+  <div class="copilot-card">
+    <div class="copilot-head">
+      <div class="copilot-avatar" id="cpAvatar">
+        <i class="ti ti-brain" aria-hidden="true"></i>
+        <div class="pulse"></div>
+      </div>
+      <div class="copilot-info">
+        <div class="copilot-name" data-t="cp_name"></div>
+        <div class="copilot-status" id="cpStatus"></div>
+      </div>
+      <div class="copilot-actions">
+        <button class="vbtn mic" id="micBtn" aria-label="Voice input">
+          <i class="ti ti-microphone" aria-hidden="true"></i>
+          <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          <span class="vlbl" id="micLbl"></span>
+        </button>
+        <button class="vbtn tts" id="ttsBtn" aria-label="Read aloud">
+          <i class="ti ti-volume" aria-hidden="true"></i>
+          <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          <span class="vlbl" id="ttsLbl"></span>
+        </button>
+      </div>
+    </div>
+    <div class="chatlog" id="chatlog"></div>
+    <div class="chips" id="chatChips"></div>
+    <div class="chat-input-row">
+      <input id="chatInput" type="text" autocomplete="off">
+      <button class="chat-send" id="chatSend" aria-label="Send">
+        <i class="ti ti-send" aria-hidden="true"></i>
+      </button>
+    </div>
+  </div>
+
+  <section class="method">
+    <h2 data-t="method_title"></h2>
+    <details open>
+      <summary><i class="ti ti-star" aria-hidden="true"></i><span data-t="det0_q"></span><span class="chev">›</span></summary>
+      <div class="dbody" data-t="det0_body"></div>
+    </details>
+    <details>
+      <summary><i class="ti ti-math-function" aria-hidden="true"></i><span data-t="det2_q"></span><span class="chev">›</span></summary>
+      <div class="dbody" data-t="det2_body"></div>
+    </details>
+    <details>
+      <summary><i class="ti ti-test-pipe" aria-hidden="true"></i><span data-t="det3_q"></span><span class="chev">›</span></summary>
+      <div class="dbody" data-t="det3_body"></div>
+    </details>
+    <details>
+      <summary><i class="ti ti-info-circle" aria-hidden="true"></i><span data-t="det5_q"></span><span class="chev">›</span></summary>
+      <div class="dbody" data-t="det5_body"></div>
+    </details>
+  </section>
+</div>
+
+<footer><div class="wrap">
+  <div class="ft-team">
+    <div class="ft-col">
+      <div class="ft-title" data-t="ft_team"></div>
+      <div class="chips2">
+        <span class="chip2 hi">Arip Nurahman</span>
+        <span class="chip2">Prof. Eka Cahya Prima</span>
+        <span class="chip2">Prof. Ida Kaniawati</span>
+        <span class="chip2">Prof. Endi Suhendi</span>
+        <span class="chip2">Prof. Chun Yen Chang</span>
+      </div>
+    </div>
+    <div class="ft-div"></div>
+    <div class="ft-col">
+      <div class="ft-title" data-t="ft_aff"></div>
+      <div class="chips2">
+        <span class="chip2">Universitas Pendidikan Indonesia (UPI)</span>
+        <span class="chip2">Institut Pendidikan Indonesia (IPI)</span>
+        <span class="chip2">Solar Energy Material Labs</span>
+        <span class="chip2">GISE — NTNU</span>
+      </div>
+    </div>
+  </div>
+  <div data-t="ft_copy"></div>
+</div></footer>
+
+<script>
+const PIGCOLOR={"Antosianin":"#A855F7","Betalain":"#E0457B","Kurkuminoid":"#E8B230","Karotenoid":"#E8772E","Klorofil":"#4DB86A","Tanin/Flavonoid":"#B07B52"};
+const BASE={"Antosianin":.35,"Betalain":.30,"Kurkuminoid":.40,"Karotenoid":.15,"Klorofil":.05,"Tanin/Flavonoid":.25};
+const BIND={"Antosianin":1.05,"Tanin/Flavonoid":1.05,"Kurkuminoid":1.05,"Betalain":1.00,"Karotenoid":.85,"Klorofil":.85};
+const PIGMENS=Object.keys(BASE);
+const SYN=5.0;
+const CROWD={1:1,2:1.00,3:.45,4:.28};
+const CLAMP={1:[.02,1.20],2:[.70,2.60],3:[.40,1.25],4:[.30,1.10]};
+const SOLVENTS=["Etanol","Metanol","Aseton","n-Heksana","Akuades","2-Propanol"];
+
+function fPart(b){b=(b||"").toLowerCase();if(/buah|bunga|kelopak|braktea|aril/.test(b))return 1.10;if(/kulit/.test(b))return 1.05;if(/daun/.test(b))return .95;if(/kayu|batang|talus/.test(b))return .90;return 1.00;}
+function fColor(w){w=(w||"").toLowerCase();if(/hitam|pekat|magenta|tua|indigo/.test(w))return 1.08;if(/pucat|muda|pudar/.test(w))return .90;return 1.00;}
+function fSolvent(pig,asam,pel){if(pig==="Antosianin")return(asam&&asam!=="-")?1.05:.92;if(pig==="Karotenoid"||pig==="Klorofil")return(pel==="n-Heksana"||pel==="Aseton")?1.00:.95;return 1.00;}
+function singleEta(m){return BASE[m.pigmen]*BIND[m.pigmen]*fPart(m.bagian)*fColor(m.warna)*fSolvent(m.pigmen,m.asam,m.pelarut);}
+function clampN(n,e){const c=CLAMP[n]||[0,3];return Math.min(Math.max(e,c[0]),c[1]);}
+function panQuality(spread){return Math.min(Math.max((spread-20)/130,0),1);}
+function compatScore(comps){const cls=new Set(comps.map(c=>c.pigmen));return .75+.30*(cls.size/comps.length);}
+function predict(comps){
+  const n=comps.length;
+  if(n===1)return{eta:clampN(1,comps[0].eta),n,core:comps[0].eta,pan:0,compat:1,spread:0,anchor:comps[0].eta,blend:comps[0].eta};
+  const sumR=comps.reduce((a,c)=>a+c.ratio,0);
+  const blend=comps.reduce((a,c)=>a+(c.ratio/sumR)*c.eta,0);
+  const anchor=Math.max(...comps.map(c=>c.eta));
+  const core=.5*anchor+.5*blend;
+  const ls=comps.map(c=>c.lmid);
+  const spread=Math.max(...ls)-Math.min(...ls);
+  const pan=panQuality(spread);
+  const compat=compatScore(comps);
+  const raw=core*(1+SYN*pan)*(CROWD[n]||.2)*compat;
+  return{eta:clampN(n,raw),n,core,pan,compat,spread,anchor,blend,crowd:CROWD[n]};
+}
+function profileEta(n,core,pan,compat){if(n===1)return clampN(1,core);return clampN(n,core*(1+SYN*pan)*(CROWD[n]||.2)*compat);}
+
+const ENGDEFAULT={align:'marg',anchor:'oh',spectrum:'med',purity:'purified',stability:'med',solpol:'neutral',ph:5.0,method:'cold',source:'normal',phase:'anatase',npsize:35,thick:8,morph:'np',doping:'none',ticl4:'no',soak:30,conc:.3,temp:'room',dca:'none',redox:'iodide',additive:'none',i2conc:'opt',ce:'carbon'};
+const ENGBEST={align:'opt',anchor:'cooh',spectrum:'wide',purity:'crude',stability:'stable',solpol:'match',ph:3.5,method:'ultra',source:'ripe',phase:'anatase500',npsize:20,thick:26.6,morph:'1d',doping:'doped',ticl4:'yes',soak:60,conc:.6,temp:'cold',dca:'dca',redox:'cobpy',additive:'both',i2conc:'opt',ce:'pt'};
+let ENG={...ENGDEFAULT};
+let engCat='dye',engOpen=false;
+const ENGSCHEMA={dye:['align','anchor','spectrum','purity','stability'],extract:['solpol','ph','method','source'],anoda:['phase','npsize','thick','morph','doping','ticl4'],soak:['soak','conc','temp','dca'],electro:['redox','additive','i2conc','ce']};
+const ENGRANGE={ph:{min:1,max:7,step:.5},soak:{min:0,max:120,step:5},thick:{min:2,max:40,step:.2},npsize:{min:5,max:40,step:1},conc:{min:.1,max:2.0,step:.1}};
+const OPTSET={align:['opt','marg','poor'],anchor:['cooh','oh','weak'],spectrum:['wide','med','narrow'],purity:['crude','purified','over'],stability:['stable','med','unstable'],solpol:['match','neutral','mis'],method:['ultra','cold','hot'],source:['ripe','normal','immature'],phase:['anatase500','anatase','rutil'],morph:['1d','np','film'],doping:['doped','none'],ticl4:['yes','no'],temp:['cold','room','hot'],dca:['dca','none','aggr'],redox:['cobpy','iodide','other'],additive:['both','one','none'],i2conc:['opt','low','high'],ce:['pt','carbon','graphite','pedot']};
+const IMPACT={align:5,anchor:5,spectrum:4,purity:3,stability:4,solpol:5,ph:4,method:3,source:3,phase:5,npsize:4,thick:4,morph:4,doping:3,ticl4:3,soak:4,conc:4,temp:3,dca:3,redox:5,additive:4,i2conc:3,ce:4};
+const ENGKEYS=Object.keys(IMPACT);
+const ENGUNIT={ph:'',soak:' min',thick:' µm',npsize:' nm',conc:' mM'};
+const ENGDEC={ph:1,soak:0,thick:1,npsize:0,conc:1};
+
+function fxField(key,pig){
+  const acid=/Antosianin|Kurkuminoid|Betalain|Tanin/.test(pig||'');
+  switch(key){
+    case 'align':return ENG.align==='opt'?1.12:ENG.align==='marg'?.90:.50;
+    case 'anchor':return ENG.anchor==='cooh'?1.10:ENG.anchor==='oh'?1.00:.62;
+    case 'spectrum':return ENG.spectrum==='wide'?1.10:ENG.spectrum==='med'?1.00:.88;
+    case 'purity':return ENG.purity==='crude'?1.05:ENG.purity==='purified'?1.00:.95;
+    case 'stability':return ENG.stability==='stable'?1.05:ENG.stability==='med'?1.00:.86;
+    case 'solpol':return ENG.solpol==='match'?1.06:ENG.solpol==='neutral'?1.00:.88;
+    case 'ph':return acid?Math.max(.80,1.06-.04*Math.abs(ENG.ph-3.5)):Math.max(.90,1.0-.015*Math.abs(ENG.ph-5));
+    case 'method':return ENG.method==='ultra'?1.06:ENG.method==='cold'?1.00:.94;
+    case 'source':return ENG.source==='ripe'?1.05:ENG.source==='normal'?1.00:.90;
+    case 'phase':return ENG.phase==='anatase500'?1.08:ENG.phase==='anatase'?1.00:.82;
+    case 'npsize':return .84+.18*Math.exp(-Math.pow(ENG.npsize-20,2)/(2*49));
+    case 'thick':return .62+.60*Math.exp(-Math.pow(ENG.thick-26.6,2)/(2*81));
+    case 'morph':return ENG.morph==='1d'?1.12:ENG.morph==='np'?1.00:.90;
+    case 'doping':return ENG.doping==='doped'?1.08:1.00;
+    case 'ticl4':return ENG.ticl4==='yes'?1.06:1.00;
+    case 'soak':return ENG.soak<=60?.82+.18*(ENG.soak/60):Math.max(.90,1.0-.0012*(ENG.soak-60));
+    case 'conc':return .85+.18*Math.exp(-Math.pow(ENG.conc-.6,2)/(2*.16));
+    case 'temp':return ENG.temp==='cold'?1.03:ENG.temp==='room'?1.00:.92;
+    case 'dca':return ENG.dca==='dca'?(pig==='Antosianin'?1.12:1.06):ENG.dca==='none'?1.00:.80;
+    case 'redox':return ENG.redox==='cobpy'?1.05:ENG.redox==='iodide'?1.00:.90;
+    case 'additive':return ENG.additive==='both'?1.06:ENG.additive==='one'?1.03:1.00;
+    case 'i2conc':return ENG.i2conc==='opt'?1.00:ENG.i2conc==='low'?.92:.90;
+    case 'ce':return ENG.ce==='pt'?1.06:ENG.ce==='carbon'?1.00:ENG.ce==='graphite'?.92:1.02;
+  }
+  return 1;
+}
+function engMultiplier(comps){
+  const pig=(comps&&comps.length)?comps[0].pigmen:'Antosianin';
+  let M=1;ENGKEYS.forEach(k=>{M*=fxField(k,pig);});
+  return Math.min(Math.max(M,.3),2.0);
+}
+
+const MAT=[
+  {id:"D001",lokal:"Bunga telang",ilmiah:"Clitoria ternatea",bagian:"Bunga",pigmen:"Antosianin",warna:"Biru-ungu",pelarut:"Etanol",asam:"Asam asetat 1%",lmax:"580-620",lmid:600,ref:"R6",status:"Terverifikasi"},
+  {id:"D002",lokal:"Ubi jalar ungu",ilmiah:"Ipomoea batatas",bagian:"Umbi",pigmen:"Antosianin",warna:"Ungu",pelarut:"Etanol",asam:"Buffer KCl pH 1",lmax:"520-540",lmid:530,ref:"R11",status:"Terverifikasi"},
+  {id:"D003",lokal:"Kubis ungu",ilmiah:"Brassica oleracea",bagian:"Daun",pigmen:"Antosianin",warna:"Ungu pekat",pelarut:"Etanol",asam:"Asam asetat 1%",lmax:"530-550",lmid:540,ref:"R20",status:"Terverifikasi"},
+  {id:"D004",lokal:"Bunga rosella",ilmiah:"Hibiscus sabdariffa",bagian:"Kelopak",pigmen:"Antosianin",warna:"Merah",pelarut:"Etanol",asam:"Asam format 1%",lmax:"520-540",lmid:530,ref:"R4",status:"Terverifikasi"},
+  {id:"D005",lokal:"Kulit manggis",ilmiah:"Garcinia mangostana",bagian:"Kulit buah",pigmen:"Antosianin",warna:"Ungu kemerahan",pelarut:"Metanol",asam:"Asam asetat 1%",lmax:"510-560",lmid:535,ref:"R5",status:"Terverifikasi"},
+  {id:"D006",lokal:"Buah duwet",ilmiah:"Syzygium cumini",bagian:"Buah",pigmen:"Antosianin",warna:"Ungu kehitaman",pelarut:"Metanol",asam:"Buffer KCl pH 1",lmax:"520-540",lmid:530,ref:"R1",status:"Kelas pigmen"},
+  {id:"D007",lokal:"Kulit terong ungu",ilmiah:"Solanum melongena",bagian:"Kulit",pigmen:"Antosianin",warna:"Ungu pekat",pelarut:"Etanol",asam:"Buffer KCl pH 1",lmax:"520-540",lmid:530,ref:"R1",status:"Kelas pigmen"},
+  {id:"D008",lokal:"Buah naga merah",ilmiah:"Hylocereus polyrhizus",bagian:"Daging buah",pigmen:"Betalain",warna:"Magenta",pelarut:"Akuades",asam:"Tanpa asam",lmax:"535-540",lmid:537.5,ref:"R12",status:"Terverifikasi"},
+  {id:"D009",lokal:"Buah bit",ilmiah:"Beta vulgaris",bagian:"Umbi",pigmen:"Betalain",warna:"Merah keunguan",pelarut:"Akuades",asam:"Tanpa asam",lmax:"535-540",lmid:537.5,ref:"R4",status:"Terverifikasi"},
+  {id:"D010",lokal:"Bunga pukul empat",ilmiah:"Mirabilis jalapa",bagian:"Bunga",pigmen:"Betalain",warna:"Magenta",pelarut:"Akuades",asam:"Tanpa asam",lmax:"535-540",lmid:537.5,ref:"R22",status:"Kelas pigmen"},
+  {id:"D011",lokal:"Kunyit",ilmiah:"Curcuma longa",bagian:"Rimpang",pigmen:"Kurkuminoid",warna:"Kuning",pelarut:"Etanol",asam:"-",lmax:"420-430",lmid:425,ref:"R7",status:"Terverifikasi"},
+  {id:"D012",lokal:"Temulawak",ilmiah:"Curcuma xanthorrhiza",bagian:"Rimpang",pigmen:"Kurkuminoid",warna:"Kuning-oranye",pelarut:"Aseton",asam:"-",lmax:"420-430",lmid:425,ref:"R7",status:"Kelas pigmen"},
+  {id:"D013",lokal:"Jahe",ilmiah:"Zingiber officinale",bagian:"Rimpang",pigmen:"Kurkuminoid",warna:"Kuning pucat",pelarut:"Etanol",asam:"-",lmax:"410-430",lmid:420,ref:"R7",status:"Kelas pigmen"},
+  {id:"D014",lokal:"Wortel",ilmiah:"Daucus carota",bagian:"Umbi",pigmen:"Karotenoid",warna:"Oranye",pelarut:"n-Heksana",asam:"-",lmax:"450-470",lmid:460,ref:"R3",status:"Kelas pigmen"},
+  {id:"D015",lokal:"Cabai merah",ilmiah:"Capsicum annuum",bagian:"Buah",pigmen:"Karotenoid",warna:"Merah",pelarut:"Aseton",asam:"-",lmax:"460-480",lmid:470,ref:"R18",status:"Terverifikasi"},
+  {id:"D016",lokal:"Bunga marigold",ilmiah:"Tagetes erecta",bagian:"Bunga",pigmen:"Karotenoid",warna:"Kuning-oranye",pelarut:"Aseton",asam:"-",lmax:"445-475",lmid:460,ref:"R3",status:"Kelas pigmen"},
+  {id:"D017",lokal:"Daun pandan",ilmiah:"Pandanus amaryllifolius",bagian:"Daun",pigmen:"Klorofil",warna:"Hijau",pelarut:"Aseton",asam:"-",lmax:"660-665",lmid:662.5,ref:"R10",status:"Terverifikasi"},
+  {id:"D018",lokal:"Daun suji",ilmiah:"Dracaena angustifolia",bagian:"Daun",pigmen:"Klorofil",warna:"Hijau pekat",pelarut:"Etanol",asam:"-",lmax:"660-665",lmid:662.5,ref:"R9",status:"Terverifikasi"},
+  {id:"D019",lokal:"Daun kelor",ilmiah:"Moringa oleifera",bagian:"Daun",pigmen:"Klorofil",warna:"Hijau",pelarut:"Etanol",asam:"-",lmax:"660-665",lmid:662.5,ref:"R21",status:"Kelas pigmen"},
+  {id:"D020",lokal:"Daun sirih",ilmiah:"Piper betle",bagian:"Daun",pigmen:"Klorofil",warna:"Hijau",pelarut:"Etanol",asam:"-",lmax:"660-665",lmid:662.5,ref:"R16",status:"Terverifikasi"},
+  {id:"D021",lokal:"Kayu secang",ilmiah:"Caesalpinia sappan",bagian:"Kayu",pigmen:"Tanin/Flavonoid",warna:"Merah",pelarut:"Etanol",asam:"-",lmax:"440-450",lmid:445,ref:"R9",status:"Terverifikasi"},
+  {id:"D022",lokal:"Daun tarum/indigo",ilmiah:"Indigofera tinctoria",bagian:"Daun",pigmen:"Tanin/Flavonoid",warna:"Biru indigo",pelarut:"Akuades",asam:"-",lmax:"600-660",lmid:630,ref:"R17",status:"Terverifikasi"},
+  {id:"D023",lokal:"Daun henna",ilmiah:"Lawsonia inermis",bagian:"Daun",pigmen:"Tanin/Flavonoid",warna:"Oranye-coklat",pelarut:"Etanol",asam:"-",lmax:"400-480",lmid:440,ref:"R13",status:"Terverifikasi"},
+  {id:"D024",lokal:"Buah asam jawa",ilmiah:"Tamarindus indica",bagian:"Daging buah",pigmen:"Tanin/Flavonoid",warna:"Coklat",pelarut:"Etanol",asam:"-",lmax:"350-430",lmid:390,ref:"R22",status:"Terverifikasi"},
+  {id:"D025",lokal:"Kulit manggis (tanin)",ilmiah:"Garcinia mangostana",bagian:"Kulit (xanthone)",pigmen:"Tanin/Flavonoid",warna:"Kuning-coklat",pelarut:"Etanol",asam:"-",lmax:"350-430",lmid:390,ref:"R5",status:"Terverifikasi"}
+];
+
+const LANGNAME={id:"Indonesian",en:"English",zh:"Simplified Chinese",ar:"Arabic"};
+const SRLANG={id:'id-ID',en:'en-US',zh:'zh-CN',ar:'ar-SA'};
+const ADDBTN={id:'+ Tambah bahan (maks 4)',en:'+ Add material (max 4)',zh:'+ 添加材料（最多 4）',ar:'+ أضف مادة (4 كحد أقصى)'};
+const CHATPH={id:'Tanya apa saja tentang DSSC…',en:'Ask anything about DSSC…',zh:'询问任何关于 DSSC 的问题…',ar:'اسأل أي شيء عن DSSC…'};
+const VLBL={id:{mic:'Bicara',tts:'Suara'},en:{mic:'Speak',tts:'Voice'},zh:{mic:'语音',tts:'朗读'},ar:{mic:'تحدّث',tts:'صوت'}};
+const VMSG={
+  id:{denied:"Akses mikrofon diblokir di tampilan tertanam ini. Klik ikon ⤢ (buka di jendela) di pojok artefak, izinkan mikrofon, lalu coba lagi.",unsup:"Peramban ini tidak mendukung input suara. Gunakan Chrome atau Edge terbaru.",nospeech:"Tidak ada suara terdengar. Dekatkan mikrofon lalu coba lagi.",nomic:"Mikrofon tidak ditemukan di perangkat ini.",neterr:"Koneksi jaringan untuk pengenalan suara bermasalah.",generic:"Input suara gagal dimulai. Coba lagi atau ketik pertanyaan Anda."},
+  en:{denied:"Microphone is blocked in this embedded view. Click the ⤢ (open in window) icon on the artifact, allow the microphone, then try again.",unsup:"This browser doesn't support voice input. Use the latest Chrome or Edge.",nospeech:"No speech detected. Move closer to the mic and try again.",nomic:"No microphone found on this device.",neterr:"Network issue with speech recognition.",generic:"Voice input failed to start. Try again or type your question."},
+  zh:{denied:"麦克风在此嵌入视图中被阻止。请点击工件上的 ⤢（在窗口中打开）图标，允许使用麦克风后重试。",unsup:"此浏览器不支持语音输入。请使用最新版 Chrome 或 Edge。",nospeech:"未检测到语音。请靠近麦克风后重试。",nomic:"未找到麦克风。",neterr:"语音识别的网络连接出现问题。",generic:"语音输入启动失败。请重试或直接输入问题。"},
+  ar:{denied:"الميكروفون محظور في هذا العرض المضمّن. انقر أيقونة ⤢ (فتح في نافذة) على الأداة، اسمح بالميكروفون ثم حاول مجدداً.",unsup:"هذا المتصفح لا يدعم الإدخال الصوتي. استخدم أحدث Chrome أو Edge.",nospeech:"لم يُكتشف صوت. اقترب من الميكروفون وحاول مجدداً.",nomic:"لم يُعثر على ميكروفون.",neterr:"مشكلة في الشبكة للتعرّف على الكلام.",generic:"فشل بدء الإدخال الصوتي. حاول مجدداً أو اكتب سؤالك."}
+};
+
+const T={
+  id:{eyebrow:"Prediktor efisiensi · DSSC pewarna alami",
+    h1:`Prediksi efisiensi DSSC dari <span class="grad">pewarna alami Indonesia</span>`,
+    hero_p:"Model sinergi panchromatic — 2 pewarna memberi puncak efisiensi, lebih dari itu menurun akibat kompetisi adsorpsi di TiO₂.",
+    badge_warn:"⚠ Prediksi model — verifikasi dengan uji J–V AM1.5G",badge_info:"interpretable · white-box",
+    card1_title:"Susun campuran",card1_sub:"Pilih 1–4 bahan. Atur rasio volume tiap komponen.",
+    card2_title:"Prediksi",card2_sub:"Diperbarui otomatis.",
+    cp_name:"DSSC Copilot",method_title:"Cara kerja model",
+    det0_q:"Mengapa 2 pewarna optimal?",
+    det0_body:`Dua pigmen dengan spektrum komplementer menciptakan <b>sinergi panchromatic</b> → efisiensi ~1,5–2,5%. Tiga atau lebih pewarna memicu kompetisi adsorpsi di permukaan TiO₂ yang terbatas → agregasi → lapisan isolator → <i>quenching</i> → efisiensi anjlok ke 0,5–1,2%.`,
+    det2_q:"Rumus prediksi",
+    det2_body:`<b>Tunggal:</b> <code>η = η_dasar × f_ikatan × f_bagian × f_warna × f_pelarut</code><br><br>
+      <b>Campuran:</b> <code>η = inti × (1+S·pan) × kompetisi(n) × kompat × M</code><br><br>
+      <ul><li>η_dasar: Antosianin 0.35 · Betalain 0.30 · Kurkuminoid 0.40 · Karotenoid 0.15 · Klorofil 0.05 · Tanin 0.25</li>
+      <li>kompetisi: n=2 →×1.00 · n=3 →×0.45 · n=4 →×0.28</li>
+      <li>M = pengali 23 variabel rekayasa sel</li></ul>`,
+    det3_q:"Ko-sensitisasi & panchromatic",
+    det3_body:`Δλ besar antar λmaks → pan mendekati 1 → sinergi maksimal. Pilih pasangan yang λmaksnya berjauhan, mis. klorofil (660 nm) + antosianin (530 nm) = Δλ 130 nm.`,
+    det5_q:"Sumber & batasan",
+    det5_body:`Dikalibrasi dari nilai terukur literatur. Banyak bahan belum punya studi DSSC spesifik. Bukan pengganti uji eksperimen.`,
+    ft_team:"Tim Pengembang",ft_aff:"Afiliasi",ft_copy:"SpektraDSSC — alat bantu riset. Prediksi indikatif.",
+    r_eff:"Efisiensi (η)",r_range:"selang",r_raw:"output mentah",r_conf_h:"Tinggi",r_conf_m:"Sedang",r_conf_ml:"Sedang-Rendah",r_conf_l:"Rendah",r_conf_lbl:"Keyakinan:",
+    r_comp:"Komponen",r_pig:"Pigmen",r_lmax:"λmaks",r_eta_s:"η tunggal",r_porsi:"Rasio",r_pos:"Kurva ko-sensitisasi",r_copy:"Salin",r_reset:"Reset",
+    r_empty:"Pilih bahan untuk melihat prediksi.",
+    ins1:"Tambah 1 pewarna komplementer untuk sinergi panchromatic.",
+    ins2g:"Zona efisiensi tertinggi — spektrum saling melengkapi.",
+    ins2l:"λmaks terlalu dekat — pilih pasangan yang lebih berjauhan.",
+    ins3:"Efisiensi menurun — permukaan TiO₂ jenuh.",
+    ins4:"Tidak disarankan — aggregasi & quenching dominan.",
+    s_mat:"BAHAN",s_db:"Database",s_custom:"Baru",s_search:"Cari tanaman…",s_pigmen:"Kelas pigmen",s_bagian:"Bagian",s_depth:"Warna",s_solvent:"Pelarut",s_lmax:"λmaks (nm)",s_acid:"Diasamkan (antosianin)",s_ratio:"Rasio",
+    s_depth_d:"Pekat",s_depth_m:"Sedang",s_depth_p:"Pucat",
+    s_parts:[["buah/bunga (1.10)",1.10],["kulit (1.05)",1.05],["rimpang/umbi/biji (1.00)",1.00],["daun (0.95)",0.95],["kayu (0.90)",0.90]],
+    cv_x:"pewarna",cv_y:"η (%)",abs_l:"serap",wl_l:"λ (nm)",
+    pig:{Antosianin:"Antosianin",Betalain:"Betalain",Kurkuminoid:"Kurkuminoid",Karotenoid:"Karotenoid",Klorofil:"Klorofil","Tanin/Flavonoid":"Tanin"},
+    eng:{title:"Rekayasa sel (23 variabel)",reset:"Set optimal",mult:"Pengali M",
+      cat:{dye:"Dye",extract:"Ekstraksi",anoda:"Fotoanoda",soak:"Perendaman",electro:"Elektrolit"},
+      lbl:{align:"LUMO–HOMO",anchor:"Gugus anchor",spectrum:"Spektrum",purity:"Kemurnian",stability:"Stabilitas",solpol:"Pelarut",ph:"pH",method:"Metode ekstraksi",source:"Sumber",phase:"Fase TiO₂",npsize:"Ukuran NP",thick:"Ketebalan",morph:"Morfologi",doping:"Doping",ticl4:"TiCl₄ blocking",soak:"Durasi rendam",conc:"Konsentrasi",temp:"Suhu rendam",dca:"Ko-adsorben",redox:"Pasangan redoks",additive:"Aditif",i2conc:"Konsentrasi I₂",ce:"Counter electrode"},
+      opt:{align:{opt:"Optimal",marg:"Marginal",poor:"Tidak selaras"},anchor:{cooh:"–COOH (kuat)",oh:"–OH",weak:"Lemah"},spectrum:{wide:"Lebar panchromatic",med:"Sedang",narrow:"Sempit"},purity:{crude:"Crude (ko-pigmen+)",purified:"Murni",over:"Terlalu murni"},stability:{stable:"Stabil",med:"Sedang",unstable:"Mudah degradasi"},solpol:{match:"Cocok",neutral:"Netral",mis:"Tidak cocok"},method:{ultra:"Ultrasonik 40°C",cold:"Maserasi dingin",hot:"Panas"},source:{ripe:"Matang",normal:"Normal",immature:"Belum matang"},phase:{anatase500:"Anatase 450–500°C",anatase:"Anatase",rutil:"Rutil"},morph:{"1d":"1D rod/tube","np":"Nanopartikel",film:"Film"},doping:{doped:"Fe/N/S ~5%",none:"Tanpa"},ticl4:{yes:"Ya",no:"Tidak"},temp:{cold:"4–10°C",room:"25°C",hot:"Panas"},dca:{dca:"DCA/CDCA",none:"Tanpa",aggr:"Agregasi"},redox:{cobpy:"Co(bpy)",iodide:"I⁻/I₃⁻",other:"Lainnya"},additive:{both:"Li⁺+tBP",one:"Salah satu",none:"Tanpa"},i2conc:{opt:"Optimal",low:"Rendah",high:"Tinggi"},ce:{pt:"Pt",carbon:"Karbon",graphite:"Grafit",pedot:"PEDOT"}},
+      hint:{align:"LUMO>E-CB TiO₂; HOMO<potensial redoks",anchor:"–COOH → ikatan kuat & injeksi cepat",thick:"Optimum ~26.6 µm",ph:"pH ~3.5 untuk kurkuminoid/antosianin",soak:"Puncak adsorpsi ~60 menit",dca:"DCA → PCE antosianin >1%",npsize:"15–25 nm optimal",morph:"1D → transport elektron lebih cepat",doping:"Fe/S-TiO₂: 3.43%→6.46%",ticl4:"Menekan rekombinasi FTO",ce:"Pt terbaik untuk reduksi I₃⁻"}},
+    cp:{intro:"Saya siap membantu analisis pilihan pewarna Anda.",idle:"Siap",thinking:"Sedang berpikir…",listening:"Mendengarkan…",speaking:"Berbicara…",err:"Koneksi gagal. Coba lagi.",
+      chips:["Mengapa 2 pewarna optimal?","Sarankan pasangan terbaik","Apa itu quenching?","Cara meningkatkan Voc?"]}},
+  en:{eyebrow:"Efficiency predictor · Natural dye DSSC",
+    h1:`Predict DSSC efficiency of <span class="grad">Indonesian natural dyes</span>`,
+    hero_p:"Panchromatic synergy model — 2 dyes peak efficiency, more dyes drop due to TiO₂ surface competition.",
+    badge_warn:"⚠ Model prediction — verify with J–V AM1.5G testing",badge_info:"interpretable · white-box",
+    card1_title:"Compose mixture",card1_sub:"Select 1–4 materials. Adjust volume ratio.",
+    card2_title:"Prediction",card2_sub:"Auto-updates.",
+    cp_name:"DSSC Copilot",method_title:"How the model works",
+    det0_q:"Why are 2 dyes optimal?",
+    det0_body:`Two pigments with complementary spectra create <b>panchromatic synergy</b> → efficiency ~1.5–2.5%. Three or more dyes trigger adsorption competition on the limited TiO₂ surface → aggregation → insulating layer → <i>quenching</i> → efficiency drops to 0.5–1.2%.`,
+    det2_q:"Prediction formula",
+    det2_body:`<b>Single:</b> <code>η = η_base × f_binding × f_part × f_color × f_solvent</code><br><br>
+      <b>Mixture:</b> <code>η = core × (1+S·pan) × competition(n) × compat × M</code><br><br>
+      <ul><li>η_base: Anthocyanin 0.35 · Betalain 0.30 · Curcuminoid 0.40 · Carotenoid 0.15 · Chlorophyll 0.05 · Tannin 0.25</li>
+      <li>competition: n=2 →×1.00 · n=3 →×0.45 · n=4 →×0.28</li>
+      <li>M = 23-variable cell engineering multiplier</li></ul>`,
+    det3_q:"Co-sensitization & panchromatic",
+    det3_body:`Large Δλ between λpeak → pan near 1 → maximal synergy. Choose pairs with distant absorption peaks, e.g. chlorophyll (660 nm) + anthocyanin (530 nm) = Δλ 130 nm.`,
+    det5_q:"Sources & limitations",
+    det5_body:`Calibrated from literature measured values. Many materials lack specific DSSC studies. Not a replacement for experimental testing.`,
+    ft_team:"Development Team",ft_aff:"Affiliations",ft_copy:"SpektraDSSC — research tool. Predictions are indicative.",
+    r_eff:"Efficiency (η)",r_range:"range",r_raw:"raw output",r_conf_h:"High",r_conf_m:"Moderate",r_conf_ml:"Moderate-Low",r_conf_l:"Low",r_conf_lbl:"Confidence:",
+    r_comp:"Component",r_pig:"Pigment",r_lmax:"λpeak",r_eta_s:"η single",r_porsi:"Ratio",r_pos:"Co-sensitization curve",r_copy:"Copy",r_reset:"Reset",
+    r_empty:"Select a material to see the prediction.",
+    ins1:"Add 1 complementary dye for panchromatic synergy.",
+    ins2g:"Highest efficiency zone — complementary spectra.",
+    ins2l:"λpeak too close — choose a more separated pair.",
+    ins3:"Efficiency declining — TiO₂ surface saturated.",
+    ins4:"Not recommended — aggregation & quenching dominant.",
+    s_mat:"MATERIAL",s_db:"Database",s_custom:"New",s_search:"Search plant…",s_pigmen:"Pigment class",s_bagian:"Plant part",s_depth:"Color depth",s_solvent:"Solvent",s_lmax:"λpeak (nm)",s_acid:"Acidified (anthocyanin)",s_ratio:"Ratio",
+    s_depth_d:"Deep",s_depth_m:"Medium",s_depth_p:"Pale",
+    s_parts:[["fruit/flower (1.10)",1.10],["peel (1.05)",1.05],["rhizome/tuber/seed (1.00)",1.00],["leaf (0.95)",0.95],["wood (0.90)",0.90]],
+    cv_x:"dyes",cv_y:"η (%)",abs_l:"abs",wl_l:"λ (nm)",
+    pig:{Antosianin:"Anthocyanin",Betalain:"Betalain",Kurkuminoid:"Curcuminoid",Karotenoid:"Carotenoid",Klorofil:"Chlorophyll","Tanin/Flavonoid":"Tannin"},
+    eng:{title:"Cell engineering (23 variables)",reset:"Set optimal",mult:"Multiplier M",
+      cat:{dye:"Dye",extract:"Extraction",anoda:"Photoanode",soak:"Soaking",electro:"Electrolyte"},
+      lbl:{align:"LUMO–HOMO",anchor:"Anchoring group",spectrum:"Spectrum",purity:"Purity",stability:"Stability",solpol:"Solvent",ph:"pH",method:"Extraction method",source:"Source",phase:"TiO₂ phase",npsize:"NP size",thick:"Thickness",morph:"Morphology",doping:"Doping",ticl4:"TiCl₄ blocking",soak:"Soak duration",conc:"Concentration",temp:"Soak temp",dca:"Co-adsorbent",redox:"Redox couple",additive:"Additives",i2conc:"I₂ conc.",ce:"Counter electrode"},
+      opt:{align:{opt:"Optimal",marg:"Marginal",poor:"Misaligned"},anchor:{cooh:"–COOH (strong)",oh:"–OH",weak:"Weak"},spectrum:{wide:"Wide panchromatic",med:"Medium",narrow:"Narrow"},purity:{crude:"Crude (co-pigments+)",purified:"Purified",over:"Over-purified"},stability:{stable:"Stable",med:"Medium",unstable:"Unstable"},solpol:{match:"Matched",neutral:"Neutral",mis:"Mismatched"},method:{ultra:"Ultrasonic 40°C",cold:"Cold maceration",hot:"Hot"},source:{ripe:"Ripe",normal:"Normal",immature:"Immature"},phase:{anatase500:"Anatase 450–500°C",anatase:"Anatase",rutil:"Rutile"},morph:{"1d":"1D rod/tube","np":"Nanoparticles",film:"Film"},doping:{doped:"Fe/N/S ~5%",none:"None"},ticl4:{yes:"Yes",no:"No"},temp:{cold:"4–10°C",room:"25°C",hot:"Hot"},dca:{dca:"DCA/CDCA",none:"None",aggr:"Aggregation"},redox:{cobpy:"Co(bpy)",iodide:"I⁻/I₃⁻",other:"Other"},additive:{both:"Li⁺+tBP",one:"One",none:"None"},i2conc:{opt:"Optimal",low:"Too low",high:"Too high"},ce:{pt:"Pt",carbon:"Carbon",graphite:"Graphite",pedot:"PEDOT"}},
+      hint:{align:"LUMO>TiO₂ CB; HOMO<electrolyte redox",anchor:"–COOH → strong binding & fast injection",thick:"Optimum ~26.6 µm",ph:"pH ~3.5 for curcuminoid/anthocyanin",soak:"Adsorption peaks at ~60 min",dca:"DCA → anthocyanin PCE >1%",npsize:"15–25 nm optimal",morph:"1D → faster electron transport",doping:"Fe/S-TiO₂: 3.43%→6.46%",ticl4:"Suppresses FTO recombination",ce:"Pt best for I₃⁻ reduction"}},
+    cp:{intro:"I'm ready to help analyze your dye selection.",idle:"Ready",thinking:"Thinking…",listening:"Listening…",speaking:"Speaking…",err:"Connection failed. Try again.",
+      chips:["Why are 2 dyes optimal?","Suggest the best pairing","What is quenching?","How to increase Voc?"]}},
+  zh:{eyebrow:"效率预测器 · 天然染料 DSSC",
+    h1:`预测<span class="grad">印尼天然染料</span>的 DSSC 效率`,
+    hero_p:"全色协同模型 — 双染料效率最优，更多染料因 TiO₂ 表面竞争而下降。",
+    badge_warn:"⚠ 模型预测 — 请用 J–V AM1.5G 测试验证",badge_info:"可解释 · 白盒模型",
+    card1_title:"配置混合物",card1_sub:"选择 1–4 种材料，调整各组分比例。",
+    card2_title:"预测",card2_sub:"自动更新。",
+    cp_name:"DSSC 副驾驶",method_title:"模型原理",
+    det0_q:"为何双染料最优？",
+    det0_body:`两种光谱互补的色素产生<b>全色协同</b>效应，效率约 1.5–2.5%。三种或更多染料引发有限 TiO₂ 表面的吸附竞争→分子聚集→绝缘层→<i>猝灭</i>→效率降至 0.5–1.2%。`,
+    det2_q:"预测公式",det3_q:"共敏化与全色",det5_q:"来源与局限",
+    det2_body:`<b>单染料：</b><code>η = η基础 × f锚定 × f部位 × f颜色 × f溶剂</code><br><br><b>混合：</b><code>η = 核心 × (1+S·pan) × 竞争(n) × 兼容 × M</code>`,
+    det3_body:`Δλ 越大 → pan 越接近 1 → 协同最大。选择吸收峰相距远的配对，如叶绿素 (660nm) + 花青素 (530nm) = Δλ 130nm。`,
+    det5_body:`基于文献实测值校准。许多材料缺乏专门 DSSC 研究，不可替代实验验证。`,
+    ft_team:"开发团队",ft_aff:"所属机构",ft_copy:"SpektraDSSC — 研究辅助工具。预测仅供参考。",
+    r_eff:"效率 (η)",r_range:"估计区间",r_raw:"原始输出",r_conf_h:"高",r_conf_m:"中",r_conf_ml:"中低",r_conf_l:"低",r_conf_lbl:"置信度：",
+    r_comp:"组分",r_pig:"色素",r_lmax:"λ峰",r_eta_s:"单一 η",r_porsi:"比例",r_pos:"共敏化曲线",r_copy:"复制",r_reset:"重置",
+    r_empty:"请选择材料查看预测。",
+    ins1:"添加 1 种互补染料触发全色协同。",ins2g:"最高效率区 — 光谱互补。",ins2l:"λ峰太近 — 选择间距更大的配对。",ins3:"效率下降 — TiO₂ 表面饱和。",ins4:"不推荐 — 聚集与猝灭主导。",
+    s_mat:"材料",s_db:"数据库",s_custom:"新",s_search:"搜索植物…",s_pigmen:"色素类别",s_bagian:"植物部位",s_depth:"颜色深度",s_solvent:"溶剂",s_lmax:"λ峰 (nm)",s_acid:"酸化萃取",s_ratio:"比例",
+    s_depth_d:"深",s_depth_m:"中",s_depth_p:"淡",
+    s_parts:[["果/花 (1.10)",1.10],["果皮 (1.05)",1.05],["根茎 (1.00)",1.00],["叶 (0.95)",0.95],["木质 (0.90)",0.90]],
+    cv_x:"染料数",cv_y:"η (%)",abs_l:"吸收",wl_l:"λ (nm)",
+    pig:{Antosianin:"花青素",Betalain:"甜菜色素",Kurkuminoid:"姜黄素",Karotenoid:"类胡萝卜素",Klorofil:"叶绿素","Tanin/Flavonoid":"单宁"},
+    eng:{title:"电池工程 (23 变量)",reset:"最佳设置",mult:"乘子 M",
+      cat:{dye:"染料",extract:"萃取",anoda:"光阳极",soak:"浸泡",electro:"电解质"},
+      lbl:{align:"LUMO–HOMO",anchor:"锚定基团",spectrum:"光谱",purity:"纯度",stability:"稳定性",solpol:"溶剂",ph:"pH",method:"萃取方法",source:"来源",phase:"TiO₂ 晶相",npsize:"NP尺寸",thick:"厚度",morph:"形貌",doping:"掺杂",ticl4:"TiCl₄",soak:"浸泡时长",conc:"浓度",temp:"温度",dca:"共吸附剂",redox:"氧化还原对",additive:"添加剂",i2conc:"I₂浓度",ce:"对电极"},
+      opt:{align:{opt:"最佳",marg:"勉强",poor:"失配"},anchor:{cooh:"–COOH",oh:"–OH",weak:"弱"},spectrum:{wide:"宽全色",med:"中",narrow:"窄"},purity:{crude:"粗提",purified:"纯化",over:"过纯"},stability:{stable:"稳定",med:"中",unstable:"易降解"},solpol:{match:"匹配",neutral:"中性",mis:"不匹配"},method:{ultra:"超声",cold:"冷浸",hot:"热"},source:{ripe:"成熟",normal:"普通",immature:"未熟"},phase:{anatase500:"锐钛矿450–500°C",anatase:"锐钛矿",rutil:"金红石"},morph:{"1d":"一维","np":"纳米颗粒",film:"薄膜"},doping:{doped:"Fe/N/S",none:"无"},ticl4:{yes:"是",no:"否"},temp:{cold:"4–10°C",room:"25°C",hot:"热"},dca:{dca:"DCA/CDCA",none:"无",aggr:"聚集"},redox:{cobpy:"Co(bpy)",iodide:"I⁻/I₃⁻",other:"其他"},additive:{both:"Li⁺+tBP",one:"其一",none:"无"},i2conc:{opt:"最佳",low:"低",high:"高"},ce:{pt:"Pt",carbon:"碳",graphite:"石墨",pedot:"PEDOT"}},
+      hint:{align:"LUMO>TiO₂导带；HOMO<氧化还原电位",anchor:"–COOH→强结合",thick:"最佳~26.6µm",ph:"pH~3.5最佳",soak:"60分钟峰值",dca:"DCA→PCE>1%",npsize:"15–25nm最佳",morph:"一维更快传输",doping:"3.43%→6.46%",ticl4:"抑制FTO复合",ce:"Pt最佳催化剂"}},
+    cp:{intro:"我已准备好分析您的染料选择。",idle:"就绪",thinking:"思考中…",listening:"正在聆听…",speaking:"正在朗读…",err:"连接失败，请重试。",
+      chips:["为何双染料最优？","推荐最佳配对","什么是猝灭？","如何提高Voc？"]}},
+  ar:{eyebrow:"مُتنبّئ الكفاءة · DSSC بالأصباغ الطبيعية",
+    h1:`تنبّأ بكفاءة DSSC من <span class="grad">الأصباغ الطبيعية الإندونيسية</span>`,
+    hero_p:"نموذج التآزر متعدد الألوان — صبغتان تُعطيان أعلى كفاءة، أكثر من ذلك ينخفض بسبب التنافس على سطح TiO₂.",
+    badge_warn:"⚠ تنبؤ نموذجي — تحقّق بـ J–V AM1.5G",badge_info:"قابل للتفسير · صندوق أبيض",
+    card1_title:"تكوين المزيج",card1_sub:"اختر 1–4 مواد واضبط نسبة الحجم.",
+    card2_title:"التنبؤ",card2_sub:"يتحدّث تلقائياً.",
+    cp_name:"مساعد DSSC",method_title:"كيف يعمل النموذج",
+    det0_q:"لماذا صبغتان هما الأمثل؟",
+    det0_body:`صبغتان بطيفين متكاملين تخلقان <b>تآزراً متعدد الألوان</b> → كفاءة ~1.5–2.5%. ثلاث أصباغ أو أكثر تسبّب تنافس الامتزاز على السطح المحدود لـ TiO₂ → تجمّع → طبقة عازلة → <i>إخماد</i> → تنخفض الكفاءة إلى 0.5–1.2%.`,
+    det2_q:"معادلة التنبؤ",det3_q:"التحسيس المشترك وتعدد الألوان",det5_q:"المصادر والقيود",
+    det2_body:`<b>مفردة:</b> <code>η = η_أساس × f_ارتباط × f_جزء × f_لون × f_مذيب</code><br><br><b>مزيج:</b> <code>η = أساس × (1+S·pan) × تنافس(n) × توافق × M</code>`,
+    det3_body:`كلما كبر Δλ → pan أقرب إلى 1 → أقصى تآزر. اختر أزواجاً بذرى امتصاص متباعدة، مثل الكلوروفيل (660nm) + الأنثوسيانين (530nm) = Δλ 130nm.`,
+    det5_body:`معاير من قيم مقيسة في الأدبيات. كثير من المواد تفتقر إلى دراسات DSSC محدّدة. لا يُغني عن الاختبار التجريبي.`,
+    ft_team:"فريق التطوير",ft_aff:"الجهات المنتسبة",ft_copy:"SpektraDSSC — أداة بحثية. التنبؤات إرشادية.",
+    r_eff:"الكفاءة (η)",r_range:"النطاق",r_raw:"الناتج الخام",r_conf_h:"عالية",r_conf_m:"متوسطة",r_conf_ml:"متوسطة-منخفضة",r_conf_l:"منخفضة",r_conf_lbl:"الثقة:",
+    r_comp:"المكوّن",r_pig:"الصبغة",r_lmax:"ذروة λ",r_eta_s:"η مفردة",r_porsi:"النسبة",r_pos:"منحنى التحسيس المشترك",r_copy:"نسخ",r_reset:"إعادة",
+    r_empty:"اختر مادة لرؤية التنبؤ.",
+    ins1:"أضف صبغة مكمّلة لتحفيز التآزر.",ins2g:"منطقة الكفاءة القصوى — طيفان متكاملان.",ins2l:"ذروة λ قريبة جداً — اختر زوجاً أكثر تباعداً.",ins3:"الكفاءة تنخفض — سطح TiO₂ مشبع.",ins4:"غير مُوصى — التجمّع والإخماد يسودان.",
+    s_mat:"مادة",s_db:"قاعدة البيانات",s_custom:"جديد",s_search:"ابحث عن نبات…",s_pigmen:"فئة الصبغة",s_bagian:"جزء النبات",s_depth:"عمق اللون",s_solvent:"المذيب",s_lmax:"ذروة λ (nm)",s_acid:"استخلاص محمّض",s_ratio:"النسبة",
+    s_depth_d:"غامق",s_depth_m:"متوسط",s_depth_p:"باهت",
+    s_parts:[["ثمرة/زهرة (1.10)",1.10],["قشرة (1.05)",1.05],["جذمور (1.00)",1.00],["ورقة (0.95)",0.95],["خشب (0.90)",0.90]],
+    cv_x:"أصباغ",cv_y:"η (%)",abs_l:"امتصاص",wl_l:"λ (nm)",
+    pig:{Antosianin:"أنثوسيانين",Betalain:"بيتالين",Kurkuminoid:"كركمينويد",Karotenoid:"كاروتينويد",Klorofil:"كلوروفيل","Tanin/Flavonoid":"تانين"},
+    eng:{title:"هندسة الخلية (23 متغيّراً)",reset:"الأمثل",mult:"معامل M",
+      cat:{dye:"الصبغة",extract:"الاستخلاص",anoda:"القطب الضوئي",soak:"النقع",electro:"الإلكتروليت"},
+      lbl:{align:"LUMO–HOMO",anchor:"مجموعة الارتباط",spectrum:"الطيف",purity:"النقاء",stability:"الثبات",solpol:"المذيب",ph:"pH",method:"طريقة الاستخلاص",source:"المصدر",phase:"طور TiO₂",npsize:"حجم NP",thick:"السماكة",morph:"المورفولوجيا",doping:"التطعيم",ticl4:"طبقة TiCl₄",soak:"مدة النقع",conc:"التركيز",temp:"حرارة النقع",dca:"مُمتز مساعد",redox:"زوج الأكسدة",additive:"المضافات",i2conc:"تركيز I₂",ce:"القطب المقابل"},
+      opt:{align:{opt:"أمثل",marg:"حدّي",poor:"غير متوافق"},anchor:{cooh:"–COOH",oh:"–OH",weak:"ضعيف"},spectrum:{wide:"واسع متعدد الألوان",med:"متوسط",narrow:"ضيّق"},purity:{crude:"خام",purified:"منقّى",over:"مفرط التنقية"},stability:{stable:"ثابت",med:"متوسط",unstable:"غير مستقر"},solpol:{match:"متوافق",neutral:"محايد",mis:"غير متوافق"},method:{ultra:"فوق صوتي",cold:"نقع بارد",hot:"ساخن"},source:{ripe:"ناضج",normal:"عادي",immature:"غير ناضج"},phase:{anatase500:"أناتاز 450–500°م",anatase:"أناتاز",rutil:"روتيل"},morph:{"1d":"أحادي البعد","np":"جسيمات",film:"غشاء"},doping:{doped:"Fe/N/S",none:"بدون"},ticl4:{yes:"نعم",no:"لا"},temp:{cold:"4–10°م",room:"25°م",hot:"ساخن"},dca:{dca:"DCA/CDCA",none:"بدون",aggr:"تجمّع"},redox:{cobpy:"Co(bpy)",iodide:"I⁻/I₃⁻",other:"أخرى"},additive:{both:"Li⁺+tBP",one:"أحدهما",none:"بدون"},i2conc:{opt:"أمثل",low:"منخفض",high:"مرتفع"},ce:{pt:"Pt",carbon:"كربون",graphite:"غرافيت",pedot:"PEDOT"}},
+      hint:{align:"LUMO>نطاق TiO₂؛ HOMO<جهد الأكسدة",anchor:"–COOH → ارتباط قوي وحقن سريع",thick:"الأمثل ~26.6µm",ph:"pH~3.5 الأمثل",soak:"ذروة الامتزاز 60 دقيقة",dca:"DCA → PCE>1%",npsize:"15–25nm الأمثل",morph:"أحادي البعد أسرع",doping:"3.43%→6.46%",ticl4:"تكبح إعادة الاتحاد",ce:"Pt أفضل محفّز"}},
+    cp:{intro:"أنا جاهز لتحليل اختيارك من الأصباغ.",idle:"جاهز",thinking:"أفكّر…",listening:"أستمع…",speaking:"أتحدّث…",err:"فشل الاتصال. حاول مرة أخرى.",
+      chips:["لماذا صبغتان الأمثل؟","اقترح أفضل زوج","ما هو الإخماد؟","كيف أرفع Voc؟"]}}
+};
+
+let LANG='id';
+function t(k){return T[LANG][k]!==undefined?T[LANG][k]:k;}
+function tE(k){return T[LANG].eng&&T[LANG].eng[k]!==undefined?T[LANG].eng[k]:k;}
+function pigName(p){return(T[LANG].pig&&T[LANG].pig[p])||p;}
+
+function setLang(l){
+  LANG=l;
+  document.documentElement.lang=(l==='zh'?'zh-CN':l);
+  document.documentElement.dir=(l==='ar'?'rtl':'ltr');
+  ['ID','EN','ZH','AR'].forEach(x=>document.getElementById('btn'+x).classList.toggle('on',x.toLowerCase()===l));
+  document.querySelectorAll('[data-t]').forEach(el=>{
+    const k=el.dataset.t,v=T[LANG][k];
+    if(v===undefined)return;
+    if(['h1','det0_body','det2_body','det3_body','det5_body'].includes(k))el.innerHTML=v;
+    else el.textContent=v;
+  });
+  document.getElementById('chatInput').placeholder=CHATPH[LANG]||'…';
+  document.getElementById('micLbl').textContent=VLBL[LANG].mic;
+  document.getElementById('ttsLbl').textContent=VLBL[LANG].tts;
+  setCpStatus(T[LANG].cp.idle);
+  renderSlots();renderEng();compute();renderChatChips();renderChatLog();
+}
+
+/* SLOTS */
+let slots=[newSlot()];
+function newSlot(){return{mode:'db',matId:null,ratio:5,custom:{pigmen:'Antosianin',partF:1.10,depth:1.00,pelarut:'Etanol',asam:true,lmid:550}};}
+const dlId='matdl';
+function ensureDatalist(){
+  if(document.getElementById(dlId))return;
+  const dl=document.createElement('datalist');dl.id=dlId;
+  MAT.forEach(m=>{const o=document.createElement('option');o.value=m.lokal+' — '+m.ilmiah;dl.appendChild(o);});
+  document.body.appendChild(dl);
+}
+function findMat(v){return MAT.find(m=>(m.lokal+' — '+m.ilmiah)===v)||null;}
+function resolve(s){
+  if(s.mode==='db'){const m=MAT.find(x=>x.id===s.matId);if(!m)return null;
+    return{pigmen:m.pigmen,lmid:m.lmid,eta:singleEta(m),color:PIGCOLOR[m.pigmen],label:m.lokal,ratio:s.ratio};}
+  const c=s.custom;
+  const fS=c.pigmen==='Antosianin'?(c.asam?1.05:.92):((c.pigmen==='Karotenoid'||c.pigmen==='Klorofil')?(c.pelarut==='n-Heksana'||c.pelarut==='Aseton'?1.0:.95):1.0);
+  const eta=BASE[c.pigmen]*BIND[c.pigmen]*c.partF*c.depth*fS;
+  return{pigmen:c.pigmen,lmid:c.lmid,eta,color:PIGCOLOR[c.pigmen],label:pigName(c.pigmen),ratio:s.ratio};
+}
+function renderSlots(){
+  ensureDatalist();
+  const host=document.getElementById('slots');host.innerHTML='';
+  const parts=T[LANG].s_parts||T.id.s_parts;
+  slots.forEach((s,i)=>{
+    const m=s.mode==='db'?MAT.find(x=>x.id===s.matId):null;
+    const col=s.mode==='db'?(m?PIGCOLOR[m.pigmen]:'#4A6878'):PIGCOLOR[s.custom.pigmen];
+    const el=document.createElement('div');el.className='slot';
+    let h=`<div class="slot-top"><span class="dot" style="background:${col}"></span>
+      <span class="slot-label">${t('s_mat')} ${i+1}</span>
+      <div class="seg">
+        <button data-m="db" class="${s.mode==='db'?'on':''}">${t('s_db')}</button>
+        <button data-m="new" class="${s.mode==='new'?'on':''}">${t('s_custom')}</button>
+      </div>${slots.length>1?`<button class="rm">×</button>`:''}</div>`;
+    if(s.mode==='db'){
+      h+=`<div class="field"><label>${t('s_search')}</label><input list="${dlId}" class="dbinput" placeholder="${t('s_search')}" value="${m?(m.lokal+' — '+m.ilmiah):''}"></div>`;
+      if(m){const e=singleEta(m);h+=`<div class="meta-row"><span class="pill" style="border-color:${col};color:${col}">${pigName(m.pigmen)}</span><span class="pill">λ ${m.lmax} nm</span><span class="pill">η≈${e.toFixed(3)}%</span></div><div class="meta-note">${m.status}</div>`;}
+    }else{
+      const c=s.custom;
+      h+=`<div class="row2">
+        <div class="field"><label>${t('s_pigmen')}</label><select class="c-pig">${PIGMENS.map(p=>`<option value="${p}" ${p===c.pigmen?'selected':''}>${pigName(p)}</option>`).join('')}</select></div>
+        <div class="field"><label>${t('s_bagian')}</label><select class="c-part">${parts.map(p=>`<option value="${p[1]}" ${p[1]===c.partF?'selected':''}>${p[0]}</option>`).join('')}</select></div></div>
+      <div class="row3">
+        <div class="field"><label>${t('s_depth')}</label><select class="c-depth">
+          <option value="1.08" ${c.depth===1.08?'selected':''}>${t('s_depth_d')}</option>
+          <option value="1.00" ${c.depth===1.00?'selected':''}>${t('s_depth_m')}</option>
+          <option value="0.90" ${c.depth===0.90?'selected':''}>${t('s_depth_p')}</option></select></div>
+        <div class="field"><label>${t('s_solvent')}</label><select class="c-solv">${SOLVENTS.map(p=>`<option ${p===c.pelarut?'selected':''}>${p}</option>`).join('')}</select></div>
+        <div class="field"><label>${t('s_lmax')}</label><input type="number" class="c-lmid" min="380" max="720" value="${c.lmid}"></div></div>
+      <div class="field"><label style="display:flex;align-items:center;gap:7px;cursor:pointer"><input type="checkbox" class="c-acid" style="width:auto" ${c.asam?'checked':''}>${t('s_acid')}</label></div>`;
+    }
+    if(slots.length>1){h+=`<div class="ratio-row"><label>${t('s_ratio')}</label><input type="range" class="rt" min="1" max="10" value="${s.ratio}"><span class="ratio-val">${s.ratio}/10</span></div>`;}
+    el.innerHTML=h;
+    el.querySelectorAll('.seg button').forEach(b=>b.onclick=()=>{s.mode=b.dataset.m;renderSlots();compute();});
+    const rm=el.querySelector('.rm');if(rm)rm.onclick=()=>{slots.splice(i,1);renderSlots();compute();};
+    const dbi=el.querySelector('.dbinput');if(dbi)dbi.onchange=()=>{const f=findMat(dbi.value);s.matId=f?f.id:null;renderSlots();compute();};
+    const rt=el.querySelector('.rt');if(rt)rt.oninput=()=>{s.ratio=+rt.value;el.querySelector('.ratio-val').textContent=s.ratio+'/10';compute();};
+    if(s.mode==='new'){
+      el.querySelector('.c-pig').onchange=e=>{s.custom.pigmen=e.target.value;renderSlots();compute();};
+      el.querySelector('.c-part').onchange=e=>{s.custom.partF=+e.target.value;compute();};
+      el.querySelector('.c-depth').onchange=e=>{s.custom.depth=+e.target.value;compute();};
+      el.querySelector('.c-solv').onchange=e=>{s.custom.pelarut=e.target.value;compute();};
+      el.querySelector('.c-lmid').oninput=e=>{s.custom.lmid=+e.target.value||550;compute();};
+      el.querySelector('.c-acid').onchange=e=>{s.custom.asam=e.target.checked;compute();};
+    }
+    host.appendChild(el);
+  });
+  const ab=document.getElementById('addBtn');
+  ab.textContent=ADDBTN[LANG]||'+ Add';ab.disabled=slots.length>=4;
+}
+document.getElementById('addBtn').onclick=()=>{if(slots.length<4){slots.push(newSlot());renderSlots();compute();}};
+
+/* ENG PANEL */
+function toggleEng(){engOpen=!engOpen;document.getElementById('engWrap').classList.toggle('open',engOpen);}
+function renderEng(){
+  const E=T[LANG].eng;if(!E)return;
+  document.getElementById('engTitle').textContent=E.title;
+  document.getElementById('engReset').textContent=E.reset;
+  const comps=slots.map(resolve).filter(Boolean);
+  const pig=comps.length?comps[0].pigmen:'Antosianin';
+  const tabs=document.getElementById('engTabs');
+  tabs.innerHTML=Object.keys(ENGSCHEMA).map(c=>`<button class="eng-tab ${c===engCat?'on':''}" data-c="${c}">${E.cat[c]}</button>`).join('');
+  tabs.querySelectorAll('.eng-tab').forEach(b=>b.onclick=()=>{engCat=b.dataset.c;renderEng();});
+  const host=document.getElementById('engFields');
+  host.innerHTML=ENGSCHEMA[engCat].map(key=>{
+    const fx=fxField(key,pig);
+    const stars='★'.repeat(IMPACT[key]);
+    const hint=E.hint&&E.hint[key]?`<div class="eng-hint">${E.hint[key]}</div>`:'';
+    if(ENGRANGE[key]){const r=ENGRANGE[key];
+      const rv=(key==='ph'?'pH ':'')+parseFloat(ENG[key]).toFixed(ENGDEC[key])+ENGUNIT[key];
+      return `<div class="eng-field"><div class="eng-fl"><span class="eng-name">${E.lbl[key]}<span class="eng-stars">${stars}</span></span><span class="eng-fx">×${fx.toFixed(2)}</span></div>
+        <div class="eng-range"><input type="range" min="${r.min}" max="${r.max}" step="${r.step}" value="${ENG[key]}" data-k="${key}"><span class="eng-rv">${rv}</span></div>${hint}</div>`;}
+    const opts=(OPTSET[key]||[]).map(o=>`<option value="${o}" ${ENG[key]===o?'selected':''}>${(E.opt&&E.opt[key]&&E.opt[key][o])||o}</option>`).join('');
+    return `<div class="eng-field"><div class="eng-fl"><span class="eng-name">${E.lbl[key]}<span class="eng-stars">${stars}</span></span><span class="eng-fx">×${fx.toFixed(2)}</span></div>
+      <select data-k="${key}">${opts}</select>${hint}</div>`;
+  }).join('');
+  host.querySelectorAll('select[data-k]').forEach(s=>s.onchange=()=>{ENG[s.dataset.k]=s.value;compute();renderEng();});
+  host.querySelectorAll('input[data-k]').forEach(s=>s.oninput=()=>{ENG[s.dataset.k]=+s.value;compute();renderEng();});
+  const M=engMultiplier(comps);
+  document.getElementById('engM').innerHTML=`${E.mult}: <b>×${M.toFixed(2)}</b>`;
+  document.getElementById('engReset').onclick=()=>{ENG={...ENGBEST};compute();renderEng();};
+}
+
+/* VISUALS */
+function spectrumSVG(comps){
+  const W=480,H=160,L=30,R=10,T2=10,B=28,pw=W-L-R,ph=H-T2-B,nm0=380,nm1=720;
+  const x=n=>L+(n-nm0)/(nm1-nm0)*pw,by=T2+ph;
+  const gs=[[380,'#6A2CA5'],[440,'#2F4FE0'],[490,'#00B3B3'],[510,'#2FBF4F'],[560,'#C9D400'],[585,'#E8B200'],[610,'#E07000'],[660,'#D02010'],[720,'#600808']];
+  const gst=gs.map(s=>`<stop offset="${((s[0]-nm0)/(nm1-nm0)*100).toFixed(1)}%" stop-color="${s[1]}"/>`).join('');
+  let bands='';
+  comps.forEach(c=>{const sg=44,amp=ph*.82;let d=`M ${x(nm0).toFixed(1)} ${by.toFixed(1)}`;
+    for(let n=nm0;n<=nm1;n+=3){const y=by-amp*Math.exp(-Math.pow(n-c.lmid,2)/(2*sg*sg));d+=` L ${x(n).toFixed(1)} ${y.toFixed(1)}`;}
+    d+=` L ${x(nm1).toFixed(1)} ${by.toFixed(1)} Z`;
+    bands+=`<path d="${d}" fill="${c.color}" opacity="0.28"/><path d="${d}" fill="none" stroke="${c.color}" stroke-width="1.5" opacity="0.85"/>`;});
+  let brk='';
+  if(comps.length>1){const ls=comps.map(c=>c.lmid),lo=Math.min(...ls),hi=Math.max(...ls);
+    brk=`<line x1="${x(lo)}" y1="${T2+5}" x2="${x(hi)}" y2="${T2+5}" stroke="#E8F4F4" stroke-width="1" stroke-dasharray="3 3" opacity=".6"/>
+    <text x="${(x(lo)+x(hi))/2}" y="${T2+1}" fill="#E8F4F4" font-size="10" text-anchor="middle" font-family="monospace" opacity=".8">Δλ ${(hi-lo).toFixed(0)} nm</text>`;}
+  let ticks='';[400,450,500,550,600,650,700].forEach(n=>{ticks+=`<line x1="${x(n)}" y1="${by}" x2="${x(n)}" y2="${by+4}" stroke="#1E3347"/>
+    <text x="${x(n)}" y="${by+15}" fill="#4A6878" font-size="9" text-anchor="middle" font-family="monospace">${n}</text>`;});
+  return`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Absorption spectrum">
+    <defs><linearGradient id="vis" x1="0" x2="1">${gst}</linearGradient></defs>
+    <rect x="${L}" y="${by+20}" width="${pw}" height="5" rx="2" fill="url(#vis)" opacity=".9"/>
+    <text x="${L-4}" y="${T2+5}" fill="#4A6878" font-size="9" text-anchor="end" font-family="monospace">${t('abs_l')}</text>
+    ${bands}${brk}${ticks}
+    <text x="${L+pw/2}" y="${H-1}" fill="#4A6878" font-size="9" text-anchor="middle" font-family="monospace">${t('wl_l')}</text></svg>`;
+}
+function curveSVG(p,M){
+  M=M||1;const W=480,H=140,L=36,R=12,T2=14,B=26,pw=W-L-R,ph=H-T2-B;
+  const xs=[1,2,3,4];
+  const pts=xs.map(n=>({n,v:profileEta(n,p.core||.4,p.n===1?.65:p.pan,p.n===1?1:p.compat)*M}));
+  const maxV=Math.max(2.6,...pts.map(o=>o.v));
+  const yMax=Math.min(maxV*1.15,5.5);
+  const X=n=>L+(n-1)/3*pw,Y=v=>T2+ph-(v/yMax)*ph,by=T2+ph;
+  const stp=yMax<=2.8?.5:(yMax<=4?1:1.5);
+  let grid='';for(let v=0;v<=yMax+.001;v+=stp){const y=Y(v);grid+=`<line x1="${L}" y1="${y}" x2="${L+pw}" y2="${y}" stroke="#1E3347" stroke-width=".5"/>
+    <text x="${L-5}" y="${y+3}" fill="#4A6878" font-size="9" text-anchor="end" font-family="monospace">${v.toFixed(1)}</text>`;}
+  const zt=Y(2.5),zb=Y(1.5);
+  const ln='M '+pts.map(pt=>`${X(pt.n).toFixed(1)} ${Y(pt.v).toFixed(1)}`).join(' L ');
+  let dots=pts.map(pt=>{const cur=pt.n===p.n;const col=pt.n===2?'#4DB86A':pt.n===1?'#2DD4C8':'#E85050';
+    return `<circle cx="${X(pt.n)}" cy="${Y(pt.v)}" r="${cur?6:3.5}" fill="${col}" ${cur?'stroke="#E8F4F4" stroke-width="2"':'opacity=".7"'}/>`+
+    (cur?`<text x="${X(pt.n)}" y="${Y(pt.v)-10}" fill="#E8F4F4" font-size="11" text-anchor="middle" font-family="monospace" font-weight="500">${pt.v.toFixed(2)}%</text>`:'');}).join('');
+  let xl='';xs.forEach(n=>{xl+=`<text x="${X(n)}" y="${by+14}" fill="${n===p.n?'#E8F4F4':'#4A6878'}" font-size="10" text-anchor="middle" font-family="monospace" ${n===p.n?'font-weight="500"':''}>${n}</text>`;});
+  return`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Co-sensitization curve">
+    <rect x="${L}" y="${zt}" width="${pw}" height="${zb-zt}" fill="#4DB86A" opacity=".08"/>
+    ${grid}
+    <path d="${ln}" fill="none" stroke="#2DD4C8" stroke-width="2" opacity=".8"/>
+    ${dots}${xl}
+    <text x="${L+pw/2}" y="${H-1}" fill="#4A6878" font-size="9" text-anchor="middle" font-family="monospace">${t('cv_x')}</text></svg>`;
+}
+
+/* COMPUTE */
+function compute(){
+  const comps=slots.map(resolve).filter(Boolean);
+  const host=document.getElementById('result');
+  if(!comps.length){host.innerHTML=`<div class="empty">${t('r_empty')}</div>`;return;}
+  const p=predict(comps);const n=p.n;
+  const M=engMultiplier(comps);
+  const eta=Math.min(Math.max(p.eta*M,.02),3.2);
+  const lo=(eta*.80).toFixed(2),hi=(eta*1.20).toFixed(2);
+  const allDb=slots.every(s=>s.mode==='db');
+  let conf,cc,ins,ic;
+  if(n===1){conf=t('r_conf_m');cc='#E8A830';ins=t('ins1');ic='';}
+  else if(n===2){
+    if(p.pan>=.55&&allDb){conf=t('r_conf_h');cc='#4DB86A';ins=t('ins2g');ic='ok';}
+    else if(p.pan>=.55){conf=t('r_conf_m');cc='#E8A830';ins=t('ins2g');ic='ok';}
+    else{conf=t('r_conf_m');cc='#E8A830';ins=t('ins2l');ic='';}
+  }else if(n===3){conf=t('r_conf_ml');cc='#E8772E';ins=t('ins3');ic='warn';}
+  else{conf=t('r_conf_l');cc='#E85050';ins=t('ins4');ic='warn';}
+
+  let bd=`<table class="bd"><tr><th>${t('r_comp')}</th><th>${t('r_pig')}</th><th>${t('r_lmax')}</th><th class="num">${t('r_eta_s')}</th>${n>1?`<th class="num">${t('r_porsi')}</th>`:''}</tr>`;
+  const sumR=comps.reduce((a,c)=>a+c.ratio,0);
+  comps.forEach(c=>{bd+=`<tr><td>${c.label}</td><td><span style="color:${c.color}">●</span> ${pigName(c.pigmen)}</td>
+    <td class="num" style="font-family:var(--mono)">${c.lmid.toFixed(0)}</td><td class="num">${c.eta.toFixed(3)}%</td>${n>1?`<td class="num">${(c.ratio/sumR*100).toFixed(0)}%</td>`:''}</tr>`;});
+  bd+=`</table>`;
+  const fac=n>1?`<div class="factors">core <b>${p.core.toFixed(3)}</b> · Δλ<b>${p.spread.toFixed(0)}nm</b> · pan<b>${p.pan.toFixed(2)}</b> · ×${(1+SYN*p.pan).toFixed(2)} · crowd×<b>${p.crowd.toFixed(2)}</b> · M×<b>${M.toFixed(2)}</b> → η<b>${eta.toFixed(2)}%</b></div>`:'';
+  const legend=`<div class="leg">${comps.map(c=>`<span><i style="background:${c.color}"></i>${c.label}</span>`).join('')}</div>`;
+  host.innerHTML=`
+    <div class="r-top">
+      <div class="r-lbl">${t('r_eff')}</div>
+      <div class="r-eta">${eta.toFixed(2)}<span class="r-unit">%</span></div>
+      <div class="r-range">${t('r_range')} ${lo}–${hi}%</div>
+      <div class="r-raw">${t('r_raw')}: ${eta.toFixed(7)}%</div>
+      <div class="r-conf"><span class="r-cdot" style="background:${cc}"></span>${t('r_conf_lbl')} ${conf}</div>
+    </div>
+    <div class="insight ${ic}">${ins}</div>
+    <div class="ncurve">${curveSVG(p,M)}</div>
+    <div style="font-family:var(--mono);font-size:10px;color:var(--dim);text-align:center;margin:2px 0 8px">${t('r_pos')}</div>
+    <div class="spectrum">${spectrumSVG(comps)}</div>
+    ${legend}${bd}${fac}
+    <div class="r-actions">
+      <button class="btn primary" id="copyBtn">${t('r_copy')}</button>
+      <button class="btn" id="resetBtn">${t('r_reset')}</button>
+    </div>`;
+  document.getElementById('copyBtn').onclick=()=>{
+    const txt=`SpektraDSSC\nη=${eta.toFixed(2)}% (${lo}–${hi}%)\n`+comps.map(c=>`• ${c.label} [${pigName(c.pigmen)}, λ${c.lmid.toFixed(0)}, η${c.eta.toFixed(3)}%]`).join('\n')+`\nM=×${M.toFixed(2)} | NOTE: model prediction`;
+    navigator.clipboard.writeText(txt).then(()=>{const b=document.getElementById('copyBtn');b.textContent='✓';setTimeout(()=>b.textContent=t('r_copy'),1500);});
+  };
+  document.getElementById('resetBtn').onclick=()=>{slots=[newSlot()];renderSlots();compute();};
+}
+
+/* ===== COPILOT ===== */
+let chat=[],chatBusy=false,ttsOn=false,recOn=false,recog=null,currentUtter=null;
+function setCpStatus(msg){const s=document.getElementById('cpStatus');if(s)s.textContent=msg;}
+function renderChatLog(){
+  const log=document.getElementById('chatlog');if(!log)return;
+  const cp=T[LANG].cp;let html='';
+  if(!chat.length)html=`<div class="msg bot">${cp.intro}</div>`;
+  chat.forEach(m=>html+=`<div class="msg ${m.role==='bot'?'bot':'user'}${m.err?' err':''}">${m.content.replace(/</g,'&lt;')}</div>`);
+  if(chatBusy)html+=`<div class="msg bot typing">${cp.thinking}</div>`;
+  log.innerHTML=html;log.scrollTop=log.scrollHeight;
+}
+function renderChatChips(){
+  const chips=document.getElementById('chatChips');if(!chips)return;
+  const qs=T[LANG].cp?T[LANG].cp.chips:[];
+  chips.innerHTML=qs.map((q,i)=>`<button class="chip" data-i="${i}">${q}</button>`).join('');
+  chips.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{document.getElementById('chatInput').value=qs[+b.dataset.i];sendChat();});
+}
+function buildCtx(){
+  const comps=slots.map(resolve).filter(Boolean);
+  if(!comps.length)return"No dyes selected yet.";
+  const p=predict(comps),M=engMultiplier(comps),eta=Math.min(Math.max(p.eta*M,.02),3.2);
+  return`Selection (${comps.length} dye${comps.length>1?'s':''}): `+comps.map(c=>`${c.label}[${c.pigmen},λ${c.lmid.toFixed(0)}nm,η${c.eta.toFixed(3)}%]`).join('; ')+
+    `. Predicted η≈${eta.toFixed(2)}% (Δλ=${p.spread.toFixed(0)}nm,pan=${p.pan.toFixed(2)},crowd×${(p.crowd||1).toFixed(2)},M×${M.toFixed(2)}).`+
+    ` Cell: align=${ENG.align},anchor=${ENG.anchor},phase=${ENG.phase},morph=${ENG.morph},thick=${ENG.thick}µm,dca=${ENG.dca},redox=${ENG.redox}.`;
+}
+function sysPrompt(){return`You are DSSC Copilot, an expert AI assistant for dye-sensitized solar cells inside SpektraDSSC app. Be concise, precise, scientifically accurate. Key facts: 2 complementary dyes = panchromatic synergy peak (1.5–2.5%); 3–4 dyes drop (0.5–1.2%) from adsorption competition, aggregation, quenching, HOMO-LUMO mismatch. Always note outputs are model predictions needing J–V AM1.5G verification. CONTEXT: ${buildCtx()}. Respond ONLY in ${LANGNAME[LANG]}. Max 3 sentences unless asked for detail.`;}
+async function sendChat(){
+  const inp=document.getElementById('chatInput');
+  const text=(inp.value||'').trim();if(!text||chatBusy)return;
+  inp.value='';
+  if(currentUtter&&'speechSynthesis' in window)window.speechSynthesis.cancel();
+  chat.push({role:'user',content:text});
+  chatBusy=true;setCpStatus(T[LANG].cp.thinking);renderChatLog();
+  document.getElementById('cpAvatar').style.boxShadow='0 0 0 3px rgba(45,212,200,.25)';
+  try{
+    const msgs=chat.filter(m=>!m.err).map(m=>({role:m.role==='bot'?'assistant':'user',content:m.content}));
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:500,system:sysPrompt(),messages:msgs})});
+    const data=await res.json();
+    const txt=(data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('\n').trim();
+    chat.push({role:'bot',content:txt||'…'});
+    if(ttsOn)speakText(txt||'');
+  }catch(e){chat.push({role:'bot',content:T[LANG].cp.err,err:true});}
+  chatBusy=false;
+  setCpStatus(T[LANG].cp.idle);
+  document.getElementById('cpAvatar').style.boxShadow='';
+  renderChatLog();
+}
+
+/* TTS */
+function speakText(txt){
+  if(!('speechSynthesis' in window)||!txt)return;
+  window.speechSynthesis.cancel();
+  currentUtter=new SpeechSynthesisUtterance(txt);
+  currentUtter.lang=SRLANG[LANG];currentUtter.rate=1.04;currentUtter.pitch=1.0;
+  currentUtter.onstart=()=>{document.getElementById('ttsBtn').classList.add('speaking');document.getElementById('cpAvatar').classList.add('speaking');setCpStatus(T[LANG].cp.speaking);};
+  currentUtter.onend=()=>{document.getElementById('ttsBtn').classList.remove('speaking');document.getElementById('cpAvatar').classList.remove('speaking');setCpStatus(T[LANG].cp.idle);};
+  window.speechSynthesis.speak(currentUtter);
+}
+function toggleTTS(){
+  ttsOn=!ttsOn;
+  document.getElementById('ttsBtn').classList.toggle('on',ttsOn);
+  if(ttsOn){const last=[...chat].reverse().find(m=>m.role==='bot'&&!m.err);speakText(last?last.content:T[LANG].cp.intro);}
+  else if('speechSynthesis' in window){window.speechSynthesis.cancel();}
+}
+
+/* VOICE INPUT */
+const SRSUPP=('webkitSpeechRecognition' in window)||('SpeechRecognition' in window);
+function startVoice(){
+  if(!SRSUPP){alert('Voice input not supported in this browser.');return;}
+  if(recOn&&recog){recog.stop();return;}
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  recog=new SR();recog.lang={id:'id-ID',en:'en-US',zh:'zh-CN',ar:'ar-SA'}[LANG];
+  recog.continuous=false;recog.interimResults=false;
+  recog.onstart=()=>{recOn=true;const b=document.getElementById('micBtn');b.classList.add('rec');b.querySelector('i').className='ti ti-player-stop-filled';document.getElementById('cpAvatar').classList.add('listening');setCpStatus(T[LANG].cp.listening);};
+  recog.onresult=e=>{const txt=e.results[0][0].transcript;document.getElementById('chatInput').value=txt;};
+  recog.onend=()=>{recOn=false;const b=document.getElementById('micBtn');b.classList.remove('rec');b.querySelector('i').className='ti ti-microphone';document.getElementById('cpAvatar').classList.remove('listening');setCpStatus(T[LANG].cp.idle);const v=document.getElementById('chatInput').value.trim();if(v)sendChat();};
+  recog.onerror=()=>{recOn=false;const b=document.getElementById('micBtn');b.classList.remove('rec');b.querySelector('i').className='ti ti-microphone';document.getElementById('cpAvatar').classList.remove('listening');setCpStatus(T[LANG].cp.idle);};
+  try{recog.start();}catch(e){}
+}
+document.getElementById('micBtn').onclick=startVoice;
+document.getElementById('ttsBtn').onclick=toggleTTS;
+document.getElementById('chatSend').onclick=sendChat;
+document.getElementById('chatInput').addEventListener('keydown',e=>{if(e.key==='Enter')sendChat();});
+if(!SRSUPP)document.getElementById('micBtn').style.display='none';
+if(!('speechSynthesis' in window))document.getElementById('ttsBtn').style.display='none';
+
+/* INIT */
+(function(){
+  const tel=MAT.find(m=>m.ilmiah.includes('Clitoria'));
+  const kun=MAT.find(m=>m.lokal==='Kunyit');
+  slots=[{...newSlot(),matId:tel?tel.id:MAT[0].id,ratio:5},{...newSlot(),matId:kun?kun.id:MAT[10].id,ratio:5}];
+  setLang('id');
+})();
+</script>
+</body>
+</html>
